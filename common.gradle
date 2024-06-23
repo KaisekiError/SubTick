@@ -35,6 +35,7 @@ repositories {
 
 dependencies {
   // loom
+  def jitpack = mcVersion>= 12006
   minecraft "com.mojang:minecraft:${project.minecraft_version}"
   mappings loom.layered {
     mappings file("../../lithium_mappings.tiny")
@@ -44,13 +45,18 @@ dependencies {
   modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
   // mods
   modImplementation "carpet:fabric-carpet:${project.carpet_core_version}"
-  modImplementation "com.g4mesoft:g4mespeed:${project.g4mespeed_version}"
+  if (project.hasProperty('g4mespeed_version')) {
+    modImplementation "com.g4mesoft:g4mespeed:${project.g4mespeed_version}"
+  }
   modImplementation "maven.modrinth:lithium:${project.lithium_version}"
-  modImplementation "fi.dy.masa.malilib:malilib-fabric-${project.malilib_version}"
+  modImplementation((jitpack ? "com.github.sakura-ryoko:malilib:" : "fi.dy.masa.malilib:malilib-fabric-") + "${project.malilib_version}")
   modImplementation "com.terraformersmc:modmenu:${project.mod_menu_version}"
 }
 
 JavaVersion JAVA_COMPATIBILITY
+if (mcVersion >= 12005) {
+  JAVA_COMPATIBILITY = JavaVersion.VERSION_21
+}
 if (mcVersion >= 11800) {
   JAVA_COMPATIBILITY = JavaVersion.VERSION_17
 }
